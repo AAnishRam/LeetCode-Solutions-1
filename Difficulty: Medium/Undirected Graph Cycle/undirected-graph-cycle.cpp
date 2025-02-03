@@ -7,7 +7,7 @@ using namespace std;
 class Solution {
   public:
     // Function to detect cycle in an undirected graph.
-    bool detectCycle(int src, vector<vector<int>>& adj, vector<int> &visited) {
+    bool bfs(int src, vector<vector<int>>& adj, vector<int> &visited) {
         
         int n = adj.size();
         
@@ -40,17 +40,44 @@ class Solution {
         
     }
     
+    bool dfs(int src, int parent, vector<vector<int>>& adj, vector<int> &visited)
+    {
+        visited[src] = 1;
+        
+        for(auto adjNode : adj[src])
+        {
+            if(!visited[adjNode])
+            {
+                if(dfs(adjNode, src, adj, visited) == true)
+                    return true;
+            }
+            else if(adjNode != parent)
+            {
+                return true;
+            }
+        }
+        
+        return false;
+        
+    }
+     
+    
     bool isCycle(vector<vector<int>>& adj) {
         int n = adj.size();
         vector<int> visited(n, 0);
         
         
-        //this is for connected components
+        //this is for connected components that is a grapf that
+        // is not connected with all the nodes
+        
         for(int i = 0; i< n;i++)
         {
             if(!visited[i])
             {
-                if(detectCycle(i, adj, visited))
+                // if(bfs(i, adj, visited))
+                //     return true;
+                
+                if(dfs(i, -1, adj, visited))
                     return true;
             }
         }
