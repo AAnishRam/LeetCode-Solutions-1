@@ -7,35 +7,90 @@ using namespace std;
 // User Function Template
 class Solution {
   public:
+  
+    // using priority_queue
     // Function to find the shortest distance of all the vertices
     // from the source vertex src.
+    // vector<int> dijkstra(vector<vector<pair<int, int>>> &adj, int src) {
+    //     // Code here
+    //     int n = adj.size();
+        
+    //     // syntax for pq
+    //     // priority_queue<Type, vector<Type>, comparator<Type>> variableName
+    //     //this is min heap
+        
+    //     //{distance, nnode}
+    //     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>>pq;
+        
+    //     // for max heap
+    //     // priority_queue<int>pq is enough
+        
+        
+    //     vector<int> distance(n, INT_MAX);
+        
+    //     distance[src] = 0;
+    //     pq.push({0, src});
+        
+    //     while(!pq.empty())
+    //     {
+    //         int node = pq.top().second;
+    //         int dist = pq.top().first;
+    //         pq.pop();
+            
+    //         for(auto it : adj[node])
+    //         { 
+    //             int adjNode = it.first;
+    //             int edgeWeight = it.second;
+                
+    //             if(dist + edgeWeight < distance[adjNode])
+    //             {
+    //               distance[adjNode] = dist + edgeWeight ;
+    //               pq.push({distance[adjNode], adjNode});
+    //             }
+    //         }
+    //     }
+        
+    //     return distance;
+    // }
+    
+    
+    
+    // using set
     vector<int> dijkstra(vector<vector<pair<int, int>>> &adj, int src) {
-        // Code here
         int n = adj.size();
-        priority_queue<pair<int, int>, vector<pair<>int, int>, greater>pq;
+        set<pair<int, int>> st;
         vector<int> distance(n, INT_MAX);
         
         distance[src] = 0;
-        pq.push({0, src});
+        st.insert({0, src});
         
-        while(!pq.empty())
+        while(!st.empty())
         {
-            int node = pq.top().second;
-            int dist = pq.top().first;
-            pq.pop();
+            auto it = *(st.begin());
+            st.erase(it);
             
-            for(auto adjNode : adj[node])
+            int node = it.second;
+            int dist = it.first;
+            
+            for(auto it : adj[node])
             {
-                if(dist + adjNode.second < distance[adjNode.first])
+                int adjNode = it.first;
+                int edgeWeight = it.second;
+                
+                
+                if(dist + edgeWeight < distance[adjNode])
                 {
-                    distance[adjNode.first] = dist + adjNode.second;
-                    pq.push({distance[adjNode.first] , adjNode.first});
+                    if(distance[adjNode] != INT_MAX)
+                        st.erase({distance[adjNode], adjNode});
+                    distance[adjNode] = dist + edgeWeight;
+                    st.insert({distance[adjNode], adjNode});
                 }
             }
         }
         
         return distance;
     }
+
 };
 
 
