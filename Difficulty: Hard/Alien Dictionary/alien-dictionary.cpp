@@ -4,65 +4,75 @@ using namespace std;
 
 
 // } Driver Code Ends
-
 class Solution {
   public:
-    string findOrder(vector<string>& words) {
+    string findOrder(vector<string> &words) {
+        
         unordered_map<char, vector<char>> adj;
         unordered_map<char, int> inDegree;
         
-        // Step 1: Initialize inDegree for all characters
-        for (auto& word : words) {
-            for (char ch : word) {
-                inDegree[ch] = 0;  // Initialize all characters with 0 in-degree
-            }
+        for(auto str : words)
+        {
+            for(auto ch : str)
+                inDegree[ch] = 0;
         }
 
-        // Step 2: Build the adjacency list from word ordering
-        for (int i = 0; i < words.size() - 1; i++) {
-            string s1 = words[i], s2 = words[i + 1];
-            int minLen = min(s1.length(), s2.length());
+        for(int count=0;count<words.size()-1;count++)
+        {
+            string s1 = words[count];
+            string s2 = words[count+1];
+            
             bool found = false;
             
-            for (int j = 0; j < minLen; j++) {
-                if (s1[j] != s2[j]) {
-                    adj[s1[j]].push_back(s2[j]);
-                    inDegree[s2[j]]++;  // Increase in-degree for dependent character
+            for(int i=0;i<min(s1.length(),s2.length());i++)
+            {
+                if(s1[i]!=s2[i])
+                {
+                    adj[s1[i]].push_back(s2[i]);
+                    inDegree[s2[i]]++;
                     found = true;
-                    break;  // Only consider the first mismatch
+                    break;
                 }
             }
             
-            // Edge case: If s1 is longer but starts with s2, return ""
-            if (!found && s1.length() > s2.length()) {
+            // at any stage if s1.length is < s2.length then we cant form dictionary
+            // ex abc -> abcd
+            // and also if both the string are same abd -> abc
+            
+            if(!found && s1.length()>s2.length())
                 return "";
+        }
+        
+
+        
+        
+        queue<char>q;
+        string ans = "";
+        for(auto it : inDegree)
+        {
+            if(it.second == 0)
+            {
+                q.push(it.first);
             }
         }
-
-        // Step 3: Perform Topological Sort (Kahn's Algorithm)
-        queue<char> q;
-        string result;
-
-        // Push all characters with in-degree 0
-        for (auto it : inDegree) {
-            if (it.second == 0) q.push(it.first);
-        }
-
-        while (!q.empty()) {
-            char ch = q.front();
+        
+        while(!q.empty())
+        {
+            char node = q.front();
             q.pop();
-            result += ch;
-
-            for (char neighbor : adj[ch]) {
-                inDegree[neighbor]--;
-                if (inDegree[neighbor] == 0) {
-                    q.push(neighbor);
-                }
+            ans += node;
+            
+            for(auto adjNode : adj[node])
+            {
+                inDegree[adjNode]--;
+                if(inDegree[adjNode] == 0)
+                    q.push(adjNode);
             }
         }
-
-        // If the result length is not equal to total unique characters, return ""
-        return result.length() == inDegree.size() ? result : "";
+        
+        
+        return ans.length() == inDegree.size() ? ans : "";
+        
     }
 };
 
